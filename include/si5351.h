@@ -21,14 +21,29 @@ extern const uint16_t Si5351_MAX_OMD_INT;
 
 extern const uint32_t Si5351_MAX_DIVIDER_DENOMINATOR;
 
+/**
+ * The reference frequency used by the Si5351 chip.
+ */
 enum RefFrequency { REF_25 = 25000000, REF_27 = 27000000 };
+
+/**
+ * One of the internal Multisynth blocks found inside an Si5351.
+ */
 enum Multisynth { MS0 = 0, MS1 = 1, MS2 = 2 };
+
+/**
+ * One of the two internal PPLs inside an Si5351.
+ */
 enum PLL { PLL_A, PLL_B };
 
+/**
+ * Denotes all the required values to fully configure one of the outputs to produce a certain
+ * frequency.
+ */
 struct Si5351Config {
-    uint32_t fmd_int;
-    uint32_t fmd_num;
-    uint32_t fmd_den;
+    uint32_t fmd_int;  //!< Integer part of the feedback multiplier.
+    uint32_t fmd_num;  //!< Numerator of the fractional part for the feedback multiplier.
+    uint32_t fmd_den;  //!< Denominator of the fractional part for the feedback multiplier.
     uint32_t omd_int;
     uint32_t omd_num;
     uint32_t omd_den;
@@ -36,6 +51,7 @@ struct Si5351Config {
 };
 
 double si5351_comp_freq(struct Si5351Config *config);
+
 uint8_t si5351_valid_conf(struct Si5351Config *config);
 uint8_t si5351_gen_conf(struct Si5351Config *config, double freq);
 uint32_t si5351_comp_p1(struct Si5351Config *config, uint8_t fmd);

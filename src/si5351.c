@@ -1,3 +1,5 @@
+/** @file */
+
 #include "si5351.h"
 
 const uint8_t Si5351_OUT_EN_CTRL = 0x03;
@@ -88,6 +90,12 @@ static void set_fmd(struct Si5351Config *config, double freq) {
     config->fmd_num = (uint32_t)(fmd * config->fmd_den);
 }
 
+/**
+ * Compute the frequency that will be generated with the specified values.
+ * @param config Configuration the calculations will be based on.
+ * @return The output frequency an Si5351 chip will generate when the specified configuration is
+ * applied.
+ */
 double si5351_comp_freq(struct Si5351Config *config) {
     double feedback_multiplier =
         (double)config->fmd_int + ((double)config->fmd_num / (double)config->fmd_den);
@@ -97,6 +105,11 @@ double si5351_comp_freq(struct Si5351Config *config) {
     return ((float)config->ref_freq * feedback_multiplier) / (output_divider);
 }
 
+/**
+ * Verify whether a given configuration is valid or not.
+ * @param config Configuration to be verified.
+ * @return Zero (0) denotes a valid configuration. Any other number an invalid one.
+ */
 uint8_t si5351_valid_conf(struct Si5351Config *config) {
     if (valid_omd_int(config->omd_int) != 1) { return 1; }
     if ((config->omd_int == Si5351_MAX_OMD_INT) && (config->omd_num != 0)) { return 1; }
@@ -114,6 +127,12 @@ uint8_t si5351_valid_conf(struct Si5351Config *config) {
     return 0;
 }
 
+/**
+ * Attempts to generate a configuration that will produce the desired frequency.
+ * @param config Generated configuration will be stored in the struct pointed to.
+ * @param freq Desired frequency in Hz.
+ * @return
+ */
 uint8_t si5351_gen_conf(struct Si5351Config *config, double freq) {
     set_omd(config, freq);
     set_fmd(config, freq);
